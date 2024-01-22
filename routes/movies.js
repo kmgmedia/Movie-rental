@@ -59,19 +59,7 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  let movie = await Movie.findByIdAndDelete(
-    req.params.id,
-    {
-      title: req.body.title,
-      genre: {
-        _id: genre._id,
-        name: genre.name,
-      },
-      numberInStock: req.body.numberInStock,
-      dailyRentalRate: req.body.dailyRentalRate,
-    },
-    { new: true }
-  );
+  let movie = await Movie.findOneAndDelete(req.params.id);
   if (!movie) res.status(404).send("the movie with the id not found");
   res.send(movie);
 });
