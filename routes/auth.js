@@ -1,9 +1,9 @@
 const Joi = require("joi");
 const { User } = require("../model/user");
-const express = require("express");
-const router = express.Router();
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
+const express = require("express");
+const router = express.Router();
 
 // for a authenticating user
 // router.post('/', async (req, res) => {
@@ -34,7 +34,9 @@ router.post("/", async (req, res) => {
   if (!user) return res.status(400).send("Invalid email or password");
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send("Invalid email or Password!");
-  res.send(true);
+  await user.save();
+  const token = user.generateAuthToken();
+  res.send(token);
 });
 
 function validate(req) {
@@ -45,24 +47,5 @@ function validate(req) {
   return Joi.validate(req, schema);
 }
 
-// // logout route
-// router.delete("/", auth, async (req, res) => {
-//   // revoke the refresh token on logging out
-//   req.user.revokeTokens(req.token.refreshTokenId);
-//   res.status(200).send();
-// });
-
-// function auth(req, res, next) {
-//   const token = req.header("Authorization");
-//   User.authenticateToken(token)
-//     .then((user) => {
-//       req.user = user;
-//       req.token = token;
-//       next();
-//     })
-//     .catch((e) => {
-//       res.status(403).send("You are not authorized");
-//     });
-// }
 
 module.exports = router;

@@ -36,7 +36,7 @@ const rentalSchema = new mongoose.Schema({
             dailyRentalRate: {
                 type: Number,
                 required: true,
-                min: 0,
+                min: 5,
                 max: 255,
             }
         }),
